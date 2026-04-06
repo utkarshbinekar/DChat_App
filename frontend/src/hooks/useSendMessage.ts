@@ -4,10 +4,10 @@ import { useWallet } from "@/context/WalletContext";
 import { useCallback } from "react";
 import { toast } from "react-toastify";
 
-const useSendMessage = (from: string, msg: string, to: string) => {
+const useSendMessage = (from: string, to: string) => {
   const { chainId, switchNetwork, getSigner } = useWallet();
 
-  return useCallback(async () => {
+  return useCallback(async (msg: string) => {
     if (!isSupportedChain(chainId)) {
       toast.warn("Switching network...", { position: "top-right" });
       await switchNetwork();
@@ -60,7 +60,7 @@ const useSendMessage = (from: string, msg: string, to: string) => {
         position: "top-right",
       });
     }
-  }, [chainId, getSigner, from, msg, to]);
+  }, [chainId, getSigner, from, to]);
 };
 
 export default useSendMessage;

@@ -1,9 +1,16 @@
 
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Input } from "../ui/input";
 
 export default function Sidebar({ currentUser, listOfUsers }: { currentUser: { name: string, avatar: string, address: string }, listOfUsers: { name: string, avatar: string, address: string }[] }) {
 
-  // console.log(currentUser);
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const filteredUsers = listOfUsers ? listOfUsers.filter((u) => 
+    u.name.toLowerCase().includes(searchQuery.toLowerCase())
+  ) : [];
+
   return (
     <div className="lg:w-[350px] md:w-[300px] w-[250px] p-6 flex border-r border-stone-100/40 flex-col gap-2">
 
@@ -19,9 +26,19 @@ export default function Sidebar({ currentUser, listOfUsers }: { currentUser: { n
         )
       }
 
-      <h1 className="py-3 text-stone-100">List of Users</h1>
+      <div className="flex items-center justify-between py-3">
+        <h1 className="text-stone-100">List of Users</h1>
+      </div>
+      
+      <Input 
+        placeholder="Search users..." 
+        value={searchQuery} 
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mb-3 bg-stone-900 border-stone-700" 
+      />
+
       <div className="flex flex-col gap-2 overflow-y-auto">
-        {listOfUsers && listOfUsers.map((user: { name: string, avatar: string, address: string }, index: number) => (
+        {filteredUsers.map((user: { name: string, avatar: string, address: string }, index: number) => (
           <Link to={`/chat/${user.address}`}
             key={index}
             className="flex cursor-pointer p-3 items-center gap-4 bg-stone-900  rounded-lg border border-stone-500/80 hover:border-purple-400/60">

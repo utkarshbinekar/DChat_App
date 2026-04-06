@@ -1,10 +1,10 @@
 import { getChatContract } from "@/constants/contract";
 import { readOnlyProvider } from "@/constants/provider";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { socket } from "@/util/socket";
 
 const useGetMessages = (from: string, to: string) => {
   const [messages, setMessages] = useState([]);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const fetchMessages = useCallback(async () => {
     try {
@@ -24,15 +24,20 @@ const useGetMessages = (from: string, to: string) => {
   useEffect(() => {
     fetchMessages();
 
-    // Poll every 3 seconds instead of using WebSocket (Hardhat doesn't support WSS)
-    intervalRef.current = setInterval(fetchMessages, 3000);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+    // Listen for real-time live messages from our socket server instead of polling
+    const handleNewMessage = (data: { from: string, message: string }) => {
+      // Refresh messages if this new message comes from the person we're chatting with, or from ourselves (syncing across devices)
+      if (data.from === to.toLowerCase() || data.from === from.toLowerCase()) {
+        fetchMessages();
       }
     };
-  }, [fetchMessages]);
+
+    socket.on("newMessage", handleNewMessage);
+
+    return () => {
+      socket.off("newMessage", handleNewMessage);
+    };
+  }, [fetchMessages, from, to]);
 
   return messages;
 };

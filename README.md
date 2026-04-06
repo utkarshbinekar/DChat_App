@@ -40,18 +40,21 @@ That's it! This single command will:
 
 ## Features
 
-- **Decentralized Messaging:** Secure on-chain messaging via Ethereum smart contracts
-- **Profile Avatars:** Stored as base64 data URLs (no IPFS/Pinata needed)
-- **Gasless Transactions:** Custom relayer pays gas on behalf of users
-- **ENS Integration:** Human-readable usernames via local ENService contract
-- **Fully Offline:** Zero external dependencies — runs entirely on localhost
+- **Real-Time Live Chat:** Zero-latency instantaneous messaging using WebSockets (`socket.io`).
+- **Live Typing Indicators:** Real-time visual feedback when participants are typing.
+- **File Attachments & Image Sharing:** Users can attach and seamlessly share image files securely inside the chat interface.
+- **Decentralized Messaging:** Secure on-chain messaging via Ethereum smart contracts.
+- **Gasless Transactions:** Custom relayer pays gas on behalf of users.
+- **ENS Integration:** Human-readable usernames via local ENService contract.
+- **Dynamic Search:** Quickly filter and search through the registered user list.
+- **Fully Offline:** Zero external dependencies — runs entirely on localhost. Avatars and media attachments are saved seamlessly to local disk by the Relayer instead of IPFS, easily bypassing all EVM gas limits.
 
 ## Architecture
 
 ```
 ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│   Frontend   │────▶│   Relayer    │────▶│   Hardhat    │
-│  (Vite/React)│     │  (Express)   │     │  (Local EVM) │
+│   Frontend   │◀───▶│   Relayer    │────▶│   Hardhat    │
+│  (Vite/React)│ WSS │  (Express)   │     │  (Local EVM) │
 │  :5173       │     │  :5000       │     │  :8545       │
 └──────────────┘     └──────────────┘     └──────────────┘
        │                                        │
@@ -71,8 +74,8 @@ That's it! This single command will:
 - **Smart Contracts:** Solidity 0.8.13
 - **Frontend:** React 18 + Vite + TailwindCSS + ethers.js v6
 - **Relayer:** Node.js + Express.js + ethers.js v6
+- **Real-Time Network:** Socket.io (WebSockets)
 - **Wallet:** MetaMask (direct injected provider, no WalletConnect)
-- **Avatars:** Base64 data URLs (fully offline, no IPFS)
 
 ## Contributing
 

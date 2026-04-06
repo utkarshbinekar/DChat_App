@@ -23,7 +23,11 @@ export default function Chat({
         className={cn("w-max max-w-xl h-max bg-secondary rounded-xl", {
           "bg-primary": mine,
         })}>
-        <p className="text-sm px-3 py-[10px]">{message}</p>
+        {message.startsWith("http://localhost:") && message.includes("/uploads/") ? (
+          <img src={message} alt="attachment" className="rounded-xl w-60 object-cover" />
+        ) : (
+          <p className="text-sm px-3 py-[10px] break-words">{message}</p>
+        )}
       </div>
     </div>
   );
