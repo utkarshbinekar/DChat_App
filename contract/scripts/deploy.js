@@ -48,8 +48,8 @@ async function main() {
   fs.writeFileSync(frontendEnvPath, frontendEnv);
   console.log(`✅ frontend/.env written`);
 
-  // ── Auto-write myRelayer/.env ─────────────────────────────────────────
-  const relayerEnvPath = path.join(__dirname, "..", "..", "myRelayer", ".env");
+  // ── Auto-write backend/.env ─────────────────────────────────────────
+  const relayerEnvPath = path.join(__dirname, "..", "..", "backend", ".env");
   const relayerEnv = [
     "# ──────────────────────────────────────────────────────",
     "# Note: These are automatically updated during the npm run setup process.",
@@ -62,7 +62,7 @@ async function main() {
     "",
   ].join("\n");
   fs.writeFileSync(relayerEnvPath, relayerEnv);
-  console.log(`✅ myRelayer/.env written`);
+  console.log(`✅ backend/.env written`);
 
   console.log("\n🎉 Setup complete! All .env files are ready.");
 }

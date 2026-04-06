@@ -7,6 +7,7 @@ const useGetMessages = (from: string, to: string) => {
   const [messages, setMessages] = useState([]);
 
   const fetchMessages = useCallback(async () => {
+    if (!from || !to) return;
     try {
       const contract = getChatContract(readOnlyProvider);
       const res = await contract.getMessagesBetweenUsers(from, to);

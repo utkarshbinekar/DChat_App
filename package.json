@@ -6,7 +6,7 @@
     "node": "npm --prefix contract run node",
     "deploy": "npm --prefix contract run deploy",
     "setup": "npm run deploy",
-    "relayer": "npm --prefix myRelayer start",
+    "relayer": "npm --prefix backend start",
     "frontend": "npm --prefix frontend run dev",
     "dev": "concurrently -n relayer,frontend -c blue,green \"npm run relayer\" \"npm run frontend\"",
     "dev:full": "concurrently -k -s first \"npm run node\" \"wait-on http://127.0.0.1:8545 && npm run setup && npm run dev\""

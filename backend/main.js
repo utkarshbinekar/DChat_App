@@ -18,6 +18,19 @@ const io = new Server(server, {
   }
 });
 
+// Lightweight in-memory store for reactions
+let messageReactions = {};
+const reactionsFile = "reactions.json";
+if (fs.existsSync(reactionsFile)) {
+  try {
+    messageReactions = JSON.parse(fs.readFileSync(reactionsFile));
+  } catch (err) {}
+}
+
+const saveReactions = () => {
+  fs.writeFileSync(reactionsFile, JSON.stringify(messageReactions));
+};
+
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
@@ -29,11 +42,41 @@ io.on("connection", (socket) => {
   });
 
   socket.on("typing", ({ from, to }) => {
+    if(!from || !to) return;
     io.to(to.toLowerCase()).emit("typing", from.toLowerCase());
   });
 
   socket.on("stopTyping", ({ from, to }) => {
+    if(!from || !to) return;
     io.to(to.toLowerCase()).emit("stopTyping", from.toLowerCase());
+  });
+
+  // Read Receipts
+  socket.on("markRead", ({ from, to }) => {
+    if(!from || !to) return;
+    // tells 'to' that 'from' has read their messages
+    io.to(to.toLowerCase()).emit("messagesRead", from.toLowerCase());
+  });
+
+  // Reactions
+  socket.on("addReaction", ({ messageIndex, reaction, from, to }) => {
+    if(!from || !to || messageIndex === undefined || !reaction) return;
+    if (!messageReactions[messageIndex]) {
+      messageReactions[messageIndex] = {};
+    }
+    messageReactions[messageIndex][from.toLowerCase()] = reaction;
+    saveReactions();
+    
+    // Broadcast to both users in the conversation
+    io.to(from.toLowerCase()).emit("reactionAdded", { messageIndex, reaction, from });
+    io.to(to.toLowerCase()).emit("reactionAdded", { messageIndex, reaction, from });
+  });
+
+  // Fetch initial reactions for a user connecting
+  socket.on("getReactions", (callback) => {
+    if(typeof callback === 'function'){
+      callback(messageReactions);
+    }
   });
 
   socket.on("disconnect", () => {

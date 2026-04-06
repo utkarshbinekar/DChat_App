@@ -23,9 +23,9 @@ if (!(Test-Path "contract\node_modules")) {
     Pop-Location
 }
 
-if (!(Test-Path "myRelayer\node_modules")) {
-    Write-Host "     Installing relayer dependencies..."
-    Push-Location "myRelayer"
+if (!(Test-Path "backend\node_modules")) {
+    Write-Host "     Installing backend dependencies..."
+    Push-Location "backend"
     npm install --silent
     Pop-Location
 }
@@ -57,10 +57,10 @@ Pop-Location
 Write-Host "     Done - Contracts deployed, .env files auto-configured." -ForegroundColor Green
 Write-Host ""
 
-# -- Step 4: Start relayer in background --------------------------
-Write-Host "[4/5] Starting relayer server..." -ForegroundColor Yellow
-$relayerProcess = Start-Process -FilePath "npm.cmd" -ArgumentList "start" -WorkingDirectory "myRelayer" -WindowStyle Minimized -PassThru
-Write-Host "     Done - Relayer running on http://localhost:5000 (PID: $($relayerProcess.Id))" -ForegroundColor Green
+# -- Step 4: Start backend in background --------------------------
+Write-Host "[4/5] Starting backend server..." -ForegroundColor Yellow
+$relayerProcess = Start-Process -FilePath "npm.cmd" -ArgumentList "start" -WorkingDirectory "backend" -WindowStyle Minimized -PassThru
+Write-Host "     Done - Backend running on http://localhost:5000 (PID: $($relayerProcess.Id))" -ForegroundColor Green
 Write-Host ""
 
 # Wait for relayer to spin up
